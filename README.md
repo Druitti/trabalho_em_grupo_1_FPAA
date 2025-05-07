@@ -1,4 +1,10 @@
+![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
+![Matplotlib](https://img.shields.io/badge/Matplotlib-%23ffffff.svg?style=for-the-badge&logo=Matplotlib&logoColor=black)
 # PathFinder - Resolvendo o Labirinto 2D com o Algoritmo A*
+
+## Integrantes do Grupo
+- [Renato Matos](https://github.com/RenatoMAP77)
+- [Gabriel Ferreira](https://github.com/Druitti)
 
 ## Introdução
 
