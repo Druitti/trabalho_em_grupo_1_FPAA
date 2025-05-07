@@ -136,7 +136,9 @@ No path found.
 - `visualize_maze_and_path()`: Visualiza o labirinto e o caminho usando matplotlib
 - `print_maze_with_path()`: Imprime o labirinto com o caminho destacado
 = `visualize_exploration_step():` Vizualiza um único passo do processo de exploração de caminhos do algorítmo A*
-- `run_pathfinder()`: Função principal que executa o algoritmo em um labirinto de exemplo
+- `animate_exploration():` Executa o algoritmo A* com animação em tempo real, visualizando o processo de exploração dos nós.
+- `run_pathfinder():` Função principal que inicializa um labirinto de exemplo e permite ao usuário escolher entre diferentes formas de execução do algoritmo A*.
+- `create_custom_maze():` Permite ao usuário criar um labirinto customizado, definindo manualmente obstáculos, pesos, posições de início e fim, e escolhendo como o algoritmo A* será executado.
 
 ## Conclusão
 

@@ -433,6 +433,199 @@ def print_maze_with_path(maze, start, end, path=None, weights=None):
             print(f"Total path cost: {total_cost:.2f}")
 
 
+def animate_exploration(maze, weights, start, end, allow_diagonal=True, delay=0.1):
+    """
+    Run the A* algorithm with animation to visualize the exploration process
+    
+    Parameters:
+    maze (2D array): The maze where 0 represents free cells and 1 represents obstacles
+    weights (2D array): Weight matrix representing cost to traverse each cell
+    start (tuple): Starting position coordinates  (linha, coluna)
+    end (tuple): End position coordinates  (linha, coluna)
+    allow_diagonal (bool): Whether to allow diagonal movement
+    delay (float): Delay between animation frames
+    
+    Returns:
+    list: Path from start to end as a list of coordinates, or None if no path exists
+    """
+    plt.figure(figsize=(8, 8))
+    plt.ion()  # Turn on interactive mode
+    
+    path, _ = astar(maze, weights, start, end, allow_diagonal, visualize_exploration_step, delay)
+    
+    plt.ioff()  
+    if path:
+        plt.title('A* PathFinder - Path Found!')
+    else:
+        plt.title('A* PathFinder - No Path Found')
+    plt.show(block=True)
+    
+    return path
+
+def run_pathfinder():
+    """Main function to run the A* algorithm on the maze"""
+    maze_str = """S 0 1 0 0
+                  0 W3 1 0 1
+                  1 0 1 W2 0
+                  1 0 0 E 1"""
+    
+    maze, weights, start, end = create_maze_from_string(maze_str)
+    
+    print("Original Maze:")
+    print_maze_with_path(maze, start, end, weights=weights)
+    
+    print("\nOptions:")
+    print("1. Encontrar caminho sem animação")
+    print("2. Encontrar caminho com animação (em tempo real)")
+    print("3. Encontrar caminho sem movimento diagonal")
+    print("4. Encontrar caminho com ambos movimento diagonal e animação")
+    print("5. Criar labirinto customizado")
+  
+    
+    choice = input("Enter your choice (1-5): ")
+    
+    allow_diagonal = True  
+    animate = False        
+    
+    if choice == '1':
+        path, _ = astar(maze, weights, start, end, allow_diagonal)
+        visualize_maze_and_path(maze, start, end, path, weights)
+        print_maze_with_path(maze, start, end, path, weights)
+    
+    elif choice == '2':
+        path = animate_exploration(maze, weights, start, end, allow_diagonal)
+        print_maze_with_path(maze, start, end, path, weights)
+    
+    elif choice == '3':
+        allow_diagonal = False
+        path, _ = astar(maze, weights, start, end, allow_diagonal)
+        visualize_maze_and_path(maze, start, end, path, weights)
+        print_maze_with_path(maze, start, end, path, weights)
+    
+    elif choice == '4':
+        allow_diagonal = True
+        path = animate_exploration(maze, weights, start, end, allow_diagonal)
+        print_maze_with_path(maze, start, end, path, weights)
+    
+    elif choice == '5':
+        create_custom_maze()
+    
+    else:
+        print("Opção Inválida. Saindo...")
+
+def create_custom_maze():
+    """Função para criar labirinto customizado"""
+    print("\nCriando labiritno customizado...")
+    
+    rows = int(input("Número de linhas: "))
+    cols = int(input("Número de colunas: "))
+    
+    maze = np.zeros((rows, cols), dtype=int)
+    weights = np.ones((rows, cols), dtype=float)
+    
+    print("\Insira a posição de início (linha, coluna) - índice zero:")
+    start_row = int(input("Start row: "))
+    start_col = int(input("Start column: "))
+    start = (start_row, start_col)
+    
+
+    
+    print("\nInsira a posição final (linha, coluna) - índice zero:")
+    end_row = int(input("End row: "))
+    end_col = int(input("End column: "))
+    if end_row >=  end_col:
+        print("\nPosição final da linha maior que linha máxima... ")
+        print("\nDefinindo Posição final da linha para: "+ (rows-1))
+        end_row= (rows-1)
+    if end_col >= cols:
+        print("\nPosição final da colunas maior que colunas máxima... ")
+        print("\nDefinindo Posição final da colunas para: "+ (cols-1))
+        end_row= (cols-1)
+
+    end = (end_row, end_col)
+    
+    adding = True
+    while adding:
+        print("\nOptions:")
+        print("1. Adcionar obstáculo")
+        print("2. adicionar áreas com peso")
+        print("3. Finalizar criação do labirinto")
+        
+        option = input("Insira uma opção de (1-3): ")
+        
+        if option == '1':
+            print("\nInsira a posição de um obstáculo (linha, coluna) - índice zero:")
+            obs_row = int(input("Linha do obstáculo: "))
+            obs_col = int(input("Coluna do obstáculo: "))
+            
+            
+            if obs_row == start_row or obs_col == start_col:
+                    print('Você não pode colocar um obstáculo na posição de início')
+                    continue
+            elif obs_row == end_row or obs_col == end_col:
+                    print('Você não pode colocar um obstáculo na posição final')
+                    continue
+            
+            maze[obs_row, obs_col] = 1
+            weights[obs_row, obs_col] = float('inf')
+            
+        elif option == '2':
+            print("\Insira uma célula ponderadas  (linha, coluna) - índice zero:")
+            weight_row = int(input("Linha da célula ponderada: "))
+            weight_col = int(input("Coluna da célula ponderada: "))
+            if weight_row == start_row or weight_col == start_col:
+                    print('Você não pode colocar um peso na posição de início')
+                    continue
+            elif weight_row == end_row or weight_col == end_col:
+                    print('Você não pode colocar um peso na posição final')
+                    continue
+            
+            weight_value = float(input("valor de peso (1 = normal, >1 = difícil de atravessar): "))
+            weights[weight_row, weight_col] = weight_value
+            
+        elif option == '3':
+            adding = False
+            
+        else:
+            print("Opção Inválida. Tente Novamente")
+            continue
+    
+    print("\nLabirinto Criado:")
+    print_maze_with_path(maze, start, end, weights=weights)
+    
+    print("\Opções:")
+    print("1. Encontrar caminho sem animação")
+    print("2. Encontrar caminho com animação")
+    print("3. Encontrar caminho sem movimento diagonal")
+    print("4. Encontrar caminho com ambos movimento diagonal e animação")
+    
+    choice = input("insira sua escolha (1-4): ")
+    
+    allow_diagonal = True  # Default setting
+    
+    if choice == '1':
+        path, _ = astar(maze, weights, start, end, allow_diagonal)
+        visualize_maze_and_path(maze, start, end, path, weights)
+        print_maze_with_path(maze, start, end, path, weights)
+    
+    elif choice == '2':
+        path = animate_exploration(maze, weights, start, end, allow_diagonal)
+        print_maze_with_path(maze, start, end, path, weights)
+    
+    elif choice == '3':
+        allow_diagonal = False
+        path, _ = astar(maze, weights, start, end, allow_diagonal)
+        visualize_maze_and_path(maze, start, end, path, weights)
+        print_maze_with_path(maze, start, end, path, weights)
+    
+    elif choice == '4':
+        allow_diagonal = True
+        path = animate_exploration(maze, weights, start, end, allow_diagonal)
+        print_maze_with_path(maze, start, end, path, weights)
+    
+    else:
+        print("Opção Inválida. Saindo...")
+
 
 def main():
     """Função do Programa Principal"""
