@@ -135,6 +135,7 @@ No path found.
 - `astar()`: Implementação do algoritmo A* para encontrar o menor caminho
 - `visualize_maze_and_path()`: Visualiza o labirinto e o caminho usando matplotlib
 - `print_maze_with_path()`: Imprime o labirinto com o caminho destacado
+= `visualize_exploration_step():` Vizualiza um único passo do processo de exploração de caminhos do algorítmo A*
 - `run_pathfinder()`: Função principal que executa o algoritmo em um labirinto de exemplo
 
 ## Conclusão
